@@ -49,6 +49,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="120"/>
                             <RowDefinition Height="60"/>
+                            <RowDefinition Height="180*"/>
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0" Margin="10">
                             <Grid.RowDefinitions>
@@ -87,7 +88,7 @@
                                 </Button>
                             </Grid>
                         </Grid>
-                        <Grid Grid.Row="2">
+                        <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="1*"/>
@@ -96,7 +97,7 @@
                                 <Label Content="請確定波紋PDF檔已經全部置放於來源路徑" Foreground="DarkOrange" VerticalAlignment="Center"/>
                             </Grid>
                             <Grid Grid.Column="1">
-                                <Button x:Name="StartProcess" Margin="5" Background="ForestGreen" Foreground="White">
+                                <Button x:Name="StartProcess" Margin="5" Background="ForestGreen" Foreground="White" Click="StartProcess_Click">
                                     <StackPanel Orientation="Horizontal">
                                         <fa:FontAwesome Icon="Play" FontSize="20" Margin="0,6"/>
                                         <Label Content="開始處理" Foreground="White" Margin="10,0"/>
@@ -104,34 +105,53 @@
                                 </Button>
                             </Grid>
                         </Grid>
+                        <Grid Grid.Row="2">
+                            <ScrollViewer>
+                                <TextBlock x:Name="PDFContent"/>
+                            </ScrollViewer>
+                        </Grid>
                     </Grid>
                 </TabItem>
                 <TabItem x:Name="Setting" Header="設定界面">
-                    <DataGrid x:Name="ItemsSetting" Margin="5,10,5,5" FontSize="14" AutoGenerateColumns="False" CanUserAddRows="true" RowEditEnding="RowEditEnding">
+                    <DataGrid x:Name="ItemsSetting" Margin="5,10,5,5" FontSize="14" AutoGenerateColumns="False" RowEditEnding="RowEditEnding">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}">
-                                <Setter Property="Padding" Value="5"/>
+                                <Setter Property="Padding" Value="10"/>
                             </Style>
                         </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="產品編號" Width="auto" Binding="{Binding Path=Product}">
+                            <DataGridTextColumn Header="產品編號" Width="auto" Binding="{Binding Path=product, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="Padding" Value="5"/>
+                                        <Setter Property="Padding" Value="10"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="βw Left" Width="auto" Binding="{Binding Path=BwLeft}">
+                            <DataGridTextColumn Header="βw Left" Width="auto" Binding="{Binding Path=BwLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=1000}">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="Padding" Value="5"/>
+                                        <Setter Property="Padding" Value="10"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="βw Right" Width="auto" Binding="{Binding Path=BwRight}">
+                            <DataGridTextColumn Header="βw Right" Width="auto" Binding="{Binding Path=BwRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=1000}">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="Padding" Value="5"/>
+                                        <Setter Property="Padding" Value="10"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="判定值" Width="auto" Binding="{Binding Path=CheckValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Padding" Value="10"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="檔案數量" Width="auto" Binding="{Binding Path=Files, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Padding" Value="10"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
@@ -141,7 +161,7 @@
             </TabControl>
         </Grid>
         <Grid Grid.Row="2">
-            <TextBlock x:Name="ErrogLog" Text="" Foreground="OrangeRed"/>
+            <TextBlock x:Name="ErrogLog" Text="" FontSize="16"  Padding="10" Foreground="OrangeRed"/>
         </Grid>
     </Grid>
 </Window>
