@@ -23,6 +23,7 @@ namespace RippleApp
         private FileMethod PGMethod = new FileMethod();
         private class ProductSet
         {
+            public short opNumber { get; set; }
             public string product { get; set; }
             public decimal BwLeft { get; set; }
             public decimal BwRight { get; set; }
@@ -194,6 +195,15 @@ namespace RippleApp
                     ConutRow++;
                     switch (ConutRow)
                     {
+                        case 2:
+                            if (LineStr.Contains("OP"))
+                            {
+                                string[] StrArrOP = LineStr.Split('=');
+                                string OPName = StrArrOP[0].Replace("OP(", "");
+                                OPName = OPName.Replace(")", "");
+                                FileValue.opNumber = Convert.ToSByte(OPName.Trim());
+                            }
+                            break;
                         case 4:
                             if (LineStr.Contains("βw"))
                             {
@@ -262,6 +272,7 @@ namespace RippleApp
             oSheet = oWB.ActiveSheet;
             SetHeader(oSheet, Title);
             int CountRow = 3;
+            GetFiles = GetFiles.OrderBy(x => x.opNumber).ToList();
             foreach (ProductSet FileValue in GetFiles)
             {
                 SetDetail(oSheet, FileValue, Defaults, CountRow);
@@ -274,13 +285,11 @@ namespace RippleApp
         {
             Excel.Application oXL;
             Excel._Workbook oWB;
-            
             string ResultFile = (string)ResultPath.Content + @"\" + Defaults.product + @"\" + SerialNo + ".xlsx";
             oXL = new Excel.Application();
             oXL.Visible = true;
             oWB = oXL.Workbooks.Add(Missing.Value);
             oWB.SaveAs(Filename: ResultFile);
-            
             return oWB;
         }
         private void SetHeader(Excel._Worksheet oSheet, string Title)
@@ -317,7 +326,7 @@ namespace RippleApp
         }
         private void SetDetail(Excel._Worksheet oSheet, ProductSet FileValie, ProductSet Defaults, int CountRow)
         {
-            oSheet.Cells[CountRow, 1] = "OP" + (CountRow - 2);
+            oSheet.Cells[CountRow, 1] = "OP" + FileValie.opNumber;
             oSheet.Cells[CountRow, 2] = FileValie.BwLeft;
             oSheet.Cells[CountRow, 3] = FileValie.BwRight;
             oSheet.Cells[CountRow, 4] = "=ABS(B" + CountRow + "-(" + Defaults.BwLeft + "))";
@@ -339,7 +348,7 @@ namespace RippleApp
             oRng.Font.Bold = true;
             oRng.VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
             oRng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
-            oSheet.Cells[CountRow, 4] = "=AVERAGE(D3:D3)";
+            oSheet.Cells[CountRow, 4] = "=AVERAGE(D3:D" + (CountRow - 1) + ")";
             oSheet.Cells[CountRow, 5] = "=IF(D13>" + Defaults.CheckValue + ",\"OK\",\"NG\")";
             oSheet.Cells[CountRow, 6] = "=AVERAGE(F3:F" + (CountRow - 1) + ")";
             oSheet.Cells[CountRow, 7] = "=IF(F13>" + Defaults.CheckValue + ",\"OK\",\"NG\")";
